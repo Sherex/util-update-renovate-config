@@ -1,0 +1,19 @@
+{
+  "name": "tool-update-renovate",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node $npm_package_main",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^8.0.0",
+    "github-api": "^3.2.2",
+    "node-github-graphql": "^0.2.7",
+    "octonode": "^0.9.5",
+    "rimraf": "^2.6.3"
+  }
+}
