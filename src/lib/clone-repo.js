@@ -1,8 +1,7 @@
 const { promisify } = require('util')
 const path = require('path')
 const exec = promisify(require('child_process').exec)
-const rimraf = promisify(require('rimraf'))
-const { mkdir, access } = require('fs').promises
+const { access } = require('fs').promises
 const { GITHUB_API_TOKEN, GITHUB_BASE_URL } = require('../config')
 const url = require('url')
 const { logger } = require('@vtfk/logger')
@@ -24,7 +23,7 @@ module.exports = async (repoPath, tempGitDir) => {
   }
 
   try {
-    access(tempGitDir)
+    await access(tempGitDir)
     logger('info', ['clone-repo', 'cloning repo', repoPath, localGitRepoPath])
     await exec(`git clone ${repoUrl} ${localGitRepoPath}`)
     logger('info', ['clone-repo', 'clone', 'success'])

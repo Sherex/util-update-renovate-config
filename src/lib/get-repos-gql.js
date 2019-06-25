@@ -1,13 +1,15 @@
 const config = require('../config')
 const GithubGraphQLApi = require('node-github-graphql')
+const GQLgetRepoByUser = require('../graphql/gql-get-repo-by-user')
+const GQLgetRepoByOrg = require('../graphql/gql-get-repo-by-org')
 const template = require('../data/template')
 const { logger } = require('@vtfk/logger')
 
 const github = new GithubGraphQLApi({ token: config.GITHUB_API_TOKEN })
 
-module.exports = async (type, name) => {
+module.exports = async (name, type) => {
   logger('info', ['get-repos', 'getting repositories'])
-  const res = await getRepos(name)
+  const res = await getRepos(name, type)
   logger('info', ['get-repos', 'number of repositories', res.length])
 
   let repos = res
@@ -25,47 +27,26 @@ module.exports = async (type, name) => {
   return repos
 }
 
-async function getRepos(org) {
+async function getRepos(name, type) {
   let cursor = ''
   let hasNextPage = true
   let repos = []
   while (hasNextPage) {
     logger('info', ['get-repos', 'requesting graphql', 'cursor', cursor])
     const res = await github.query(
-      `
-        query repos($org: String!, $cursor: String) {
-          user(login: $org) {
-            repositories(first: 100, after: $cursor) {
-              nodes {
-                object(expression: "master:renovate.json") {
-                  ... on Blob {
-                    repository {
-                      name
-                    }
-                    text
-                  }
-                }
-                id
-                url
-                nameWithOwner
-              }
-              pageInfo {
-                hasNextPage
-                endCursor
-              }
-              totalCount
-            }
-          }
-        }
-      `,
+      type === 'org' ? GQLgetRepoByOrg : GQLgetRepoByUser,
       {
-        org
+        name
       }
     ).catch(error => {
       logger('error', ['get-repos', 'error while getting repos', error])
       throw error
     })
-    const reposData = res.data.user.repositories
+    
+    let reposData = res.data.user.repositories
+    if (type === 'org') {
+      reposData = res.data.organization.repositories
+    }
 
     logger('info', ['get-repos', 'requesting graphql', 'repos gotten', reposData.nodes.length, 'success'])
 

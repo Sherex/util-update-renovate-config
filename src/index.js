@@ -8,10 +8,10 @@ const { logger } = require('@vtfk/logger')
 ;(async () => {
   logger('info', ['index', 'Start'])
   try {
-    const repos = await getRepos('user', 'Sherex')
+    const repos = await getRepos('Sherex', 'user')
     const tempPath = await tempDir.create()
   
-    for (let i = 0; i < repos.length; i++) {
+    for (let i = 0; i < 2 /*repos.length*/; i++) {
       const repo = repos[i]
       logger('info', ['index', repo.nameWithOwner, 'Processing'])
       const repoPath = await cloneRepo(repo.nameWithOwner, tempPath)
