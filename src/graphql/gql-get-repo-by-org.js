@@ -1,6 +1,6 @@
 module.exports = /* GraphQL */`
 query repos($name: String!, $cursor: String) {
-  user(login: $name) {
+  organization(login: $name) {
     repositories(first: 100, after: $cursor) {
       nodes {
         object(expression: "master:renovate.json") {

@@ -43,9 +43,11 @@ async function getRepos(name, type) {
       throw error
     })
     
-    let reposData = res.data.user.repositories
+    let reposData
     if (type === 'org') {
       reposData = res.data.organization.repositories
+    } else {
+      reposData = res.data.user.repositories
     }
 
     logger('info', ['get-repos', 'requesting graphql', 'repos gotten', reposData.nodes.length, 'success'])
