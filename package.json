@@ -12,9 +12,7 @@
   "dependencies": {
     "@vtfk/logger": "^1.0.3",
     "dotenv": "^8.0.0",
-    "github-api": "^3.2.2",
     "node-github-graphql": "^0.2.7",
-    "octonode": "^0.9.5",
     "rimraf": "^2.6.3"
   }
 }
