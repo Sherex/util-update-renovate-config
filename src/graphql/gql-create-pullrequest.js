@@ -1,4 +1,4 @@
-module.exports = /* GraphQL */`
+module.exports = /* GraphQL */ `
 mutation pr($prInput: CreatePullRequestInput!) {
   createPullRequest(input: $prInput) {
     pullRequest {

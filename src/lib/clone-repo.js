@@ -6,9 +6,7 @@ const { GITHUB_API_TOKEN, GITHUB_BASE_URL } = require('../config')
 const url = require('url')
 const { logger } = require('@vtfk/logger')
 
-
 module.exports = async (repoPath, tempGitDir) => {
-
   let repoUrl = new url.URL(GITHUB_BASE_URL)
   repoUrl.username = GITHUB_API_TOKEN
   repoUrl.pathname = repoPath

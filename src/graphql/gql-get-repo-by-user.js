@@ -1,4 +1,4 @@
-module.exports = /* GraphQL */`
+module.exports = /* GraphQL */ `
 query repos($name: String!, $cursor: String) {
   user(login: $name) {
     repositories(first: 100, after: $cursor) {

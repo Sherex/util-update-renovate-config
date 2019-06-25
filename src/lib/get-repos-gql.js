@@ -27,7 +27,7 @@ module.exports = async (name, type) => {
   return repos
 }
 
-async function getRepos(name, type) {
+async function getRepos (name, type) {
   let cursor = ''
   let hasNextPage = true
   let repos = []
@@ -42,7 +42,7 @@ async function getRepos(name, type) {
       logger('error', ['get-repos', 'error while getting repos', error])
       throw error
     })
-    
+
     let reposData
     if (type === 'org') {
       reposData = res.data.organization.repositories

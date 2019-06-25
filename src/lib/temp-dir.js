@@ -1,8 +1,9 @@
 const { TEMP_GIT_DIR } = require('../config')
-const { mkdir, rmdir } = require('fs').promises
+const { mkdir } = require('fs').promises
 const { promisify } = require('util')
 const rimraf = promisify(require('rimraf'))
 const { logger } = require('@vtfk/logger')
+const { join } = require('path')
 
 module.exports.create = async () => {
   logger('info', ['temp-dir', 'Creating directory', TEMP_GIT_DIR])
@@ -10,7 +11,7 @@ module.exports.create = async () => {
   return TEMP_GIT_DIR
 }
 
-module.exports.remove = async () => {
-  logger('info', ['temp-dir', 'Removing directory', TEMP_GIT_DIR])
-  await rimraf(TEMP_GIT_DIR)
+module.exports.remove = async (subDirPath = '') => {
+  logger('info', ['temp-dir', 'Removing directory', join(TEMP_GIT_DIR, subDirPath)])
+  await rimraf(join(TEMP_GIT_DIR, subDirPath))
 }

@@ -31,7 +31,7 @@ module.exports = async (repoPath) => {
   try {
     logger('info', ['configure-renovate-json', 'creating branch', branchName])
     await exec(`git checkout -b ${branchName}`)
-    logger('info', ['configure-renovate-json', 'stagin file', targetFile])
+    logger('info', ['configure-renovate-json', 'staging file', targetFile])
     await exec(`git add ${targetFile}`)
     logger('info', ['configure-renovate-json', 'commiting with message', commitMessage])
     await exec(`git commit -m ${commitMessage}`)
@@ -41,6 +41,6 @@ module.exports = async (repoPath) => {
     logger('error', ['configure-renovate-json', 'error while performing git commands', error])
     throw error
   }
-  
+
   process.chdir(origPath)
 }
