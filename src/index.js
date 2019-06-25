@@ -3,19 +3,21 @@ const cloneRepo = require('./lib/clone-repo')
 const confRenovate = require('./lib/configure-renovate-json')
 const createPr = require('./lib/create-pr')
 const tempDir = require('./lib/temp-dir')
+const { logger } = require('@vtfk/logger')
+
 ;(async () => {
+  logger('info', ['index', 'Start'])
   try {
     const repos = await getRepos('user', 'Sherex')
     const tempPath = await tempDir.create()
   
     for (let i = 0; i < repos.length; i++) {
       const repo = repos[i]
-      console.log(`#### ${repo.nameWithOwner} ####`)
+      logger('info', ['index', repo.nameWithOwner, 'Processing'])
       const repoPath = await cloneRepo(repo.nameWithOwner, tempPath)
-      console.log(`Configuring ${repoPath}`)
       await confRenovate(repoPath)
       await createPr(repo.id)
-      console.log('Done!')
+      logger('info', ['index', repo.nameWithOwner, 'Done'])
     }
   
     await tempDir.remove()
@@ -25,5 +27,6 @@ const tempDir = require('./lib/temp-dir')
 
   
 })().catch(error => {
+  logger('error', ['index', 'error in index', error])
   console.error(error)
 })

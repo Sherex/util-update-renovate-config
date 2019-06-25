@@ -3,6 +3,7 @@ const { TARGET_FILE, GIT_COMMIT_MESSAGE } = require('../config')
 const { promisify } = require('util')
 const exec = promisify(require('child_process').exec)
 const template = require('../data/template')
+const { logger } = require('@vtfk/logger')
 
 module.exports = async (repoPath) => {
   const branchName = 'update-renovate-json'
@@ -19,21 +20,25 @@ module.exports = async (repoPath) => {
   }
 
   try {
-    console.log('Writing to file!')
+    logger('info', ['configure-renovate-json', 'writing template to', targetFile])
     await writeFile(targetFile, JSON.stringify(template, null, 2))
+    logger('info', ['configure-renovate-json', 'template was successfully written to', targetFile])
   } catch (error) {
+    logger('error', ['configure-renovate-json', 'error while writing template to', targetFile])
     throw error
   }
 
   try {
-    console.log(`Adds branch ${branchName}`)
+    logger('info', ['configure-renovate-json', 'creating branch', branchName])
     await exec(`git checkout -b ${branchName}`)
-    console.log(`Staging file ${targetFile}`)
+    logger('info', ['configure-renovate-json', 'stagin file', targetFile])
     await exec(`git add ${targetFile}`)
-    console.log(`Commiting and pushing to ${branchName} with message ${commitMessage}`)
+    logger('info', ['configure-renovate-json', 'commiting with message', commitMessage])
     await exec(`git commit -m ${commitMessage}`)
+    logger('info', ['configure-renovate-json', 'pushing branch', branchName])
     await exec(`git push --set-upstream origin ${branchName}`)
   } catch (error) {
+    logger('error', ['configure-renovate-json', 'error while performing git commands', error])
     throw error
   }
   

@@ -1,15 +1,16 @@
 const config = require('../config')
 const GithubGraphQLApi = require('node-github-graphql')
 const template = require('../data/template')
+const { logger } = require('@vtfk/logger')
 
 const github = new GithubGraphQLApi({ token: config.GITHUB_API_TOKEN })
 
 module.exports = async (type, name) => {
-  //const res = require('../../data.json')
+  logger('info', ['get-repos', 'getting repositories'])
   const res = await getRepos(name)
-  console.log(`Got ${res.length} repos!`)
-  
-  let names = res
+  logger('info', ['get-repos', 'number of repositories', res.length])
+
+  let repos = res
     .filter(repo => repo.object !== null)
     .map(repo => ({
       name: repo.object.repository.name,
@@ -18,20 +19,18 @@ module.exports = async (type, name) => {
       url: repo.url,
       nameWithOwner: repo.nameWithOwner
     }))
-  console.log(`Found ${names.length} repos with a renovate.json!`)
-  names = names.filter(repo => repo.text !== JSON.stringify(template))
-  console.log(`Filtered to ${names.length} repos where renovate.json is incorrect!`)
-  console.log(names.map(repo => repo.nameWithOwner))
-  return names
+  logger('info', ['get-repos', 'repos with renovate.json', repos.length])
+  repos = repos.filter(repo => repo.text !== JSON.stringify(template))
+  logger('info', ['get-repos', 'repos to be processed', repos.length])
+  return repos
 }
 
 async function getRepos(org) {
-  const fs = require('fs').promises
   let cursor = ''
   let hasNextPage = true
   let repos = []
   while (hasNextPage) {
-    console.log(`Request start | Cursor: ${cursor}`)
+    logger('info', ['get-repos', 'requesting graphql', 'cursor', cursor])
     const res = await github.query(
       `
         query repos($org: String!, $cursor: String) {
@@ -62,19 +61,18 @@ async function getRepos(org) {
       {
         org
       }
-    ).catch(err => {
-      console.error(JSON.stringify(err), null, 2)
+    ).catch(error => {
+      logger('error', ['get-repos', 'error while getting repos', error])
+      throw error
     })
-    console.log(`Request end`)
     const reposData = res.data.user.repositories
 
-    console.log(`Has next page: ${reposData.pageInfo.hasNextPage}`)
+    logger('info', ['get-repos', 'requesting graphql', 'repos gotten', reposData.nodes.length, 'success'])
+
     hasNextPage = reposData.pageInfo.hasNextPage
     cursor = reposData.pageInfo.endCursor
-
-    console.log(`Repos: ${reposData.nodes.length}`)
     repos = repos.concat(reposData.nodes)
+    logger('info', ['get-repos', 'requesting graphql', 'repositories left', Number(reposData.totalCount) - repos.length])
   }
-  fs.writeFile('./data.json', JSON.stringify(repos))
   return repos
 }

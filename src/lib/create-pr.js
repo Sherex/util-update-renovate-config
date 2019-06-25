@@ -1,11 +1,12 @@
 const config = require('../config')
 const GithubGraphQLApi = require('node-github-graphql')
+const { logger } = require('@vtfk/logger')
 
 const github = new GithubGraphQLApi({ token: config.GITHUB_API_TOKEN })
 
 module.exports = async (repositoryId) => {
   const fs = require('fs').promises
-  console.log(`Creating PR...`)
+  logger('info', ['create-pr', 'creating pr'])
   const res = await github
     .query(
       `
@@ -34,9 +35,10 @@ module.exports = async (repositoryId) => {
         }
       }
     )
-    .catch(err => {
-      console.error(JSON.stringify(err), null, 2)
+    .catch(error => {
+      logger('error', ['create-pr', 'error while creating pr', error])
+      throw error
     })
-  console.log('PR Created!')
+  logger('info', ['create-pr', 'pr created'])
   return true
 }
