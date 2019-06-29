@@ -36,7 +36,8 @@ async function getRepos (name, type) {
     const res = await github.query(
       type === 'org' ? GQLgetRepoByOrg : GQLgetRepoByUser,
       {
-        name
+        name,
+        cursor
       }
     ).catch(error => {
       logger('error', ['get-repos', 'error while getting repos', error])
