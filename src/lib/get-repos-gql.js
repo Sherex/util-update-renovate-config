@@ -28,7 +28,7 @@ module.exports = async (name, type) => {
 }
 
 async function getRepos (name, type) {
-  let cursor = ''
+  let cursor = null
   let hasNextPage = true
   let repos = []
   while (hasNextPage) {
