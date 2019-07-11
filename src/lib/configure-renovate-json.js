@@ -1,12 +1,12 @@
 const { access, writeFile } = require('fs').promises
-const { TARGET_FILE, GIT_COMMIT_MESSAGE } = require('../config')
+const { TARGET_FILE, GIT_COMMIT_MESSAGE, GITHUB_PR_BRANCH } = require('../config')
 const { promisify } = require('util')
 const exec = promisify(require('child_process').exec)
 const template = require('../data/template')
 const { logger } = require('@vtfk/logger')
 
 module.exports = async (repoPath) => {
-  const branchName = 'update-renovate-json'
+  const branchName = GITHUB_PR_BRANCH
   const targetFile = TARGET_FILE
   const commitMessage = GIT_COMMIT_MESSAGE || `Updated ${targetFile}`
   const origPath = process.cwd()

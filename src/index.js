@@ -20,10 +20,10 @@ const { logger } = require('@vtfk/logger')
       logger('info', ['index', repo.nameWithOwner, 'Done'])
       await tempDir.remove(repo.nameWithOwner)
     }
-
-    await tempDir.remove()
   } catch (error) {
     throw error
+  } finally {
+    await tempDir.remove()
   }
 })().catch(error => {
   logger('error', ['index', 'error in index', error])
