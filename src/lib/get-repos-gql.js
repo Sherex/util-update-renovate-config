@@ -1,11 +1,8 @@
-const config = require('../config')
-const GithubGraphQLApi = require('node-github-graphql')
+const github = require('./github-client')
 const GQLgetRepoByUser = require('../graphql/gql-get-repo-by-user')
 const GQLgetRepoByOrg = require('../graphql/gql-get-repo-by-org')
 const template = require('../data/template')
 const { logger } = require('@vtfk/logger')
-
-const github = new GithubGraphQLApi({ token: config.GITHUB_API_TOKEN })
 
 module.exports = async (name, type) => {
   logger('info', ['get-repos', 'getting repositories'])
@@ -33,22 +30,22 @@ async function getRepos (name, type) {
   let repos = []
   while (hasNextPage) {
     logger('info', ['get-repos', 'requesting graphql', 'cursor', cursor])
-    const res = await github.query(
+    const res = await github.request(
       type === 'org' ? GQLgetRepoByOrg : GQLgetRepoByUser,
       {
         name,
         cursor
       }
     ).catch(error => {
-      logger('error', ['get-repos', 'error while getting repos', error])
+      logger('error', ['get-repos', 'error while getting repos', error.message])
       throw error
     })
 
     let reposData
     if (type === 'org') {
-      reposData = res.data.organization.repositories
+      reposData = res.organization.repositories
     } else {
-      reposData = res.data.user.repositories
+      reposData = res.user.repositories
     }
 
     logger('info', ['get-repos', 'requesting graphql', 'repos gotten', reposData.nodes.length, 'success'])

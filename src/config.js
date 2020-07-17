@@ -2,6 +2,7 @@ require('dotenv').config()
 
 module.exports = {
   GITHUB_API_TOKEN: process.env.GITHUB_API_TOKEN || '',
+  GITHUB_GRAPHQL_URL: process.env.GITHUB_GRAPHQL_URL || 'https://api.github.com/graphql',
   GITHUB_BASE_URL: process.env.GITHUB_BASE_URL || 'https://github.com',
   GITHUB_PR_BRANCH: process.env.GITHUB_PR_BRANCH || 'chore/reconfigure-renovate',
   GITHUB_PR_TITLE: process.env.GITHUB_PR_TITLE || 'Update Renovate Configuration',

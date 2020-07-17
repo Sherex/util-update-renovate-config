@@ -1,13 +1,11 @@
 const config = require('../config')
-const GithubGraphQLApi = require('node-github-graphql')
+const github = require('./github-client')
 const GQLCreatePullRequest = require('../graphql/gql-create-pullrequest')
 const { logger } = require('@vtfk/logger')
 
-const github = new GithubGraphQLApi({ token: config.GITHUB_API_TOKEN })
-
 module.exports = async (repositoryId) => {
   logger('info', ['create-pr', 'creating pr'])
-  await github.query(
+  await github.request(
     GQLCreatePullRequest,
     {
       prInput: {
