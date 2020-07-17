@@ -10,9 +10,9 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@vtfk/logger": "^1.0.3",
-    "dotenv": "^8.0.0",
+    "@vtfk/logger": "2.2.0",
+    "dotenv": "8.2.0",
     "node-github-graphql": "^0.2.7",
-    "rimraf": "^2.6.3"
+    "rimraf": "3.0.2"
   }
 }
